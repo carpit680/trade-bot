@@ -1,0 +1,4 @@
+yfinance==0.2.35
+matplotlib==3.8.2
+mplfinance==0.12.10b0
+plotly==5.18.0
