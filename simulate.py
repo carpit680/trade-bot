@@ -28,10 +28,16 @@ def simulate_realtime_data(csv_path):
     fig.add_trace(volume_trace, row=2, col=1)
 
     # Update layout
-    fig.update_layout(title='Candlestick Plot',
-                      xaxis_title='Datetime',
-                      yaxis_title='Price',
-                      xaxis_rangeslider_visible=False)
+    fig.update_layout(
+            title='Updated Candlestick Plot',
+            xaxis=dict(
+                rangeslider=dict(visible=False),  # Disable rangeslider
+                type='date',  # Use 'date' type for the x-axis
+            ),
+            yaxis=dict(constrain='domain'),  # Automatically adjust y-axis based on the visible range
+            xaxis2=dict(rangeslider=dict(visible=False), type='date', anchor='y2'),  # Link x-axis2 to y2-axis
+            yaxis2=dict(anchor='x2', range=[0, data['Volume'].max() * 1.2]),  # Set the initial y-axis range for volume
+        )
 
     # Display the initial figure
     fig.show()
@@ -43,17 +49,15 @@ def simulate_realtime_data(csv_path):
     latest_data = latest_data[['Timestamp', 'Open', 'High', 'Low', 'Close', 'Volume']]
 
     # Update candlestick trace with the latest data
-    candlestick_trace.x = [latest_data.index]
-    candlestick_trace.open = [latest_data['Open']]
-    candlestick_trace.high = [latest_data['High']]
-    candlestick_trace.low = [latest_data['Low']]
-    candlestick_trace.close = [latest_data['Close']]
+    candlestick_trace.x = latest_data.index
+    candlestick_trace.open = latest_data['Open']
+    candlestick_trace.high = latest_data['High']
+    candlestick_trace.low = latest_data['Low']
+    candlestick_trace.close = latest_data['Close']
 
     # Update volume trace with the latest data
-    volume_trace.x = [latest_data.index]
-    volume_trace.y = [latest_data['Volume']]
-
-    fig.update()
+    volume_trace.x = latest_data.index
+    volume_trace.y = latest_data['Volume']
 
 if __name__ == "__main__":
     symbol = "AAPL"
